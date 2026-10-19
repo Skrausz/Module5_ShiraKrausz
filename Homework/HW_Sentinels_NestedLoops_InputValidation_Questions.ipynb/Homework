@@ -1,0 +1,483 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "id": "90ac47ab",
+      "metadata": {
+        "id": "90ac47ab"
+      },
+      "source": [
+        "# HW: Sentinels, Nested Loops, and Input Validation (≈70 minutes)\n",
+        "\n",
+        "**Instructions**\n",
+        "- Work in order. Each task has a time estimate to help you pace yourself.\n",
+        "- Do **not** use external libraries. Keep to standard Python.\n",
+        "- Wherever you see `# TODO`, fill in the code.\n",
+        "- Run the test cells (where provided) to sanity-check your work.\n",
+        "- If something is unclear, add a short comment explaining your reasoning.\n",
+        "\n",
+        "**Learning goals**\n",
+        "- Use **sentinel-controlled while loops** to gather input until the user indicates “stop.”\n",
+        "- Use **try/except** and loops to **validate inputs** and **reprompt**.\n",
+        "- Use **nested loops** to build tables or to loop over characters in strings."
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "e1f28e9a",
+      "metadata": {
+        "id": "e1f28e9a"
+      },
+      "source": [
+        "---\n",
+        "## ⏱️ Estimated total time: ~70 minutes\n",
+        "\n",
+        "- **Task 1** – Sentinel stats (15 min)  \n",
+        "- **Task 2** – Choice validator (8 min)  \n",
+        "- **Task 3** – Multiplication grid (12 min)  \n",
+        "- **Task 4** – Vowel counter across words (15 min)  \n",
+        "- **Task 5** – Mini-gradebook (20 min)"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "983a92fb",
+      "metadata": {
+        "id": "983a92fb"
+      },
+      "source": [
+        "---\n",
+        "## Task 1 — Sentinel stats (≈15 min)\n",
+        "\n",
+        "Write a program that repeatedly asks the user for **integers between 0 and 100**.  \n",
+        "Use a **sentinel**: the user types `done` (any case) to finish.\n",
+        "\n",
+        "**Requirements**\n",
+        "- Ignore blank inputs (reprompt).\n",
+        "- If the user types something that's not an integer in range, print a friendly message and reprompt.\n",
+        "- When the user finishes, print: **count**, **sum**, **min**, **max**, and **mean** (to 2 decimals) using f-string: `{num:.2f}`.\n",
+        "- If no valid numbers were entered, print `\"No data.\"`"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "id": "bd66cac2",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "bd66cac2",
+        "outputId": "096c5d9d-aa9d-44ce-feec-0013ee3b41b6"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Enter an integer 0-100. Type done if finished.8\n",
+            "Enter an integer 0-100. Type done if finished.done\n",
+            "count: 1.00, sum: 8.00, min: 8.00, max: 8.00, mean: 8.00\n"
+          ]
+        }
+      ],
+      "source": [
+        "def stats():\n",
+        "#initializing variables\n",
+        "    count = 0\n",
+        "    sum = 0\n",
+        "\n",
+        "    list = []\n",
+        "\n",
+        "    while True:\n",
+        "        integers = input(\"Enter an integer 0-100. Type done if finished.\").strip().lower() #Input\n",
+        "        if integers == 'done':\n",
+        "            break\n",
+        "        elif integers == '':\n",
+        "            continue\n",
+        "        else:\n",
+        "            try: # If valid input, then validate\n",
+        "                integers = int(integers)\n",
+        "                if integers < 0 or integers > 100:\n",
+        "                    raise ValueError(\"Please enter an integer 0-100, not {integer}\")\n",
+        "            except:\n",
+        "                print(f\"Please enter an integer, not {integers}\")\n",
+        "                continue\n",
+        "        if integers >= 0 and integers <= 100:\n",
+        "            count += 1 #add 1 to count\n",
+        "            sum += integers #add next integer to total sum\n",
+        "            list.append(integers) #add number to list(so can get min/max from list)\n",
+        "            mean = sum/count #calculate average\n",
+        "            minimum = min(list)\n",
+        "            maximum = max(list)\n",
+        "    if count == 0: # if 'done' before any data entered\n",
+        "      print(\"No data\")\n",
+        "    else:\n",
+        "      print(f\"count: {count:.2f}, sum: {sum:.2f}, min: {minimum:.2f}, max: {maximum:.2f}, mean: {mean:.2f}\")\n",
+        "stats()"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "03a0f72b",
+      "metadata": {
+        "id": "03a0f72b"
+      },
+      "source": [
+        "---\n",
+        "## Task 2 — Choice validator (≈8 min)\n",
+        "\n",
+        "Write a function `get_choice(prompt, options)` that:\n",
+        "- Prints the prompt and the list of options.\n",
+        "- Repeatedly asks for input until the user types **exactly** one of the options (case-insensitive).\n",
+        "- Returns the **originally cased** option from the `options` list.\n",
+        "\n",
+        "**Example**\n",
+        "```text\n",
+        "Your choice (red/blue/green): Blue\n",
+        "# returns \"blue\" if options = [\"red\", \"blue\", \"green\"]\n",
+        "```\n",
+        "\n",
+        "> Hint: Build `options_lower` once, then search it each time to find the index."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "id": "ac138b14",
+      "metadata": {
+        "collapsed": true,
+        "id": "ac138b14"
+      },
+      "outputs": [],
+      "source": [
+        "def get_choice(prompt, options): #defining function\n",
+        "\n",
+        " colors = input(prompt)\n",
+        " end = 0 # initializing variable\n",
+        "\n",
+        " while end != 1: # if end is changed to 1, loop will end\n",
+        "  colors_lower = colors.lower().strip()\n",
+        "  for index in options: #go through options in list\n",
+        "\n",
+        "    if index == colors_lower: #if a guess matches any in list...\n",
+        "\n",
+        "     end = 1 #change end, which will end while loop\n",
+        "     break #break out of forloop, so stops anylizing more colors\n",
+        "  else:\n",
+        "    colors = input(\"Pick a new color\") #if color didn't match any listed, get new input\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        " print(f\"You chose{colors}\")\n",
+        "get_choice(\"Pick a color\", [\"red\",\"blue\",\"green\"]) #defining promt, options"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "id": "c11c898d",
+      "metadata": {
+        "id": "c11c898d"
+      },
+      "outputs": [],
+      "source": [
+        "# (Quick check) Manually try:\n",
+        "# color = get_choice(\"Pick a color\", [\"red\",\"blue\",\"green\"])\n",
+        "# print(\"You picked:\", color)"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "003c976f",
+      "metadata": {
+        "id": "003c976f"
+      },
+      "source": [
+        "---\n",
+        "## Task 3 — Multiplication grid (≈12 min)\n",
+        "\n",
+        "Prompt the user for two **integers** `rows` and `cols` in the range **1..10**.  \n",
+        "Validate both with try/except and reprompt until valid.\n",
+        "\n",
+        "Then print a **rows × cols** multiplication table, where each cell shows `r*c` (1-indexed).  \n",
+        "Format with spaces so columns line up **at least** for small sizes.\n",
+        "\n",
+        "**Example (rows=3, cols=4)**\n",
+        "```\n",
+        "    1  2  3  4\n",
+        " 1: 1  2  3  4\n",
+        " 2: 2  4  6  8\n",
+        " 3: 3  6  9 12\n",
+        "```"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 15,
+      "id": "db519675",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "db519675",
+        "outputId": "e88ef122-e261-45a6-e7fa-4816180c64b0"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Enter a number of rows 1-10: fg\n",
+            "Wrong input, we need a number between 1 and 10: \n",
+            "Enter a number of rows 1-10: 56\n",
+            "Wrong input, we need a number between 1 and 10: \n",
+            "Enter a number of rows 1-10: 7\n",
+            "Enter a number of columns 1-10: 8\n",
+            "    1  2  3  4  5  6  7  8  \n",
+            "1:  1  2  3  4  5  6  7  8  \n",
+            "2:  2  4  6  8  10  12  14  16  \n",
+            "3:  3  6  9  12  15  18  21  24  \n",
+            "4:  4  8  12  16  20  24  28  32  \n",
+            "5:  5  10  15  20  25  30  35  40  \n",
+            "6:  6  12  18  24  30  36  42  48  \n",
+            "7:  7  14  21  28  35  42  49  56  \n"
+          ]
+        }
+      ],
+      "source": [
+        "\n",
+        "#validating in loops, so can re-ask for new input\n",
+        "while True:\n",
+        "  rows = input(\"Enter a number of rows 1-10: \") #input rows\n",
+        "  try: #validate\n",
+        "    rows = int(rows)\n",
+        "    if rows < 1 or rows > 10:\n",
+        "      raise ValueError(\"Wrong input, we need a number between 1 and 10: \")\n",
+        "  except ValueError as e:\n",
+        "   print(\"Wrong input, we need a number between 1 and 10: \")\n",
+        "  else: #break out of validation loop\n",
+        "    break\n",
+        "while True: #same as above, just with columns\n",
+        "  cols = input(\"Enter a number of columns 1-10: \")\n",
+        "  try:\n",
+        "    cols = int(cols)\n",
+        "    if cols < 1 or cols > 10:\n",
+        "      raise ValueError(\"Wrong input, we need a number between 1 and 10: \")\n",
+        "  except ValueError as e:\n",
+        "   print(\"Wrong input, we need a number between 1 and 10: \")\n",
+        "  else:\n",
+        "    break\n",
+        "print(end=\"    \") #add a space to line up rows nicely\n",
+        "for c in range(1, cols + 1): #printing column headers\n",
+        "  print(c, end=\"  \")\n",
+        "print()\n",
+        "for r in range(1, rows + 1):\n",
+        "  print(f'{r}:', end=\"  \") # row headers\n",
+        "  for c in range(1,cols + 1):\n",
+        "    print(f\"{r*c}\", end=\"  \") #printing multiples, adding spaces for formatting\n",
+        "  print()\n",
+        ""
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "416bab28",
+      "metadata": {
+        "id": "416bab28"
+      },
+      "source": [
+        "---\n",
+        "## Task 4 — Vowel counter across words (≈15 min)\n",
+        "\n",
+        "Use a **sentinel** loop to read words until the user types `done`.  \n",
+        "For each word, use a **nested loop** (loop over characters) to count **vowels** `a e i o u` (case-insensitive).\n",
+        "\n",
+        "**Output**\n",
+        "- After each word, print `\"{word}\" has {k} vowel(s)`.\n",
+        "- At the end, print the **total number of vowels** across all words.\n",
+        "\n",
+        "> Hint: A string is looped over the way a list is.  Use `for ch in word:` and compare `ch.lower()` against a set like `{'a','e','i','o','u'}`."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "id": "c7a96d30",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "c7a96d30",
+        "outputId": "abc3d9f5-6cce-431f-c142-e574d742aa68"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Input a word. Type done to exit: eee\n",
+            "eee has 3 vowel(s)\n"
+          ]
+        }
+      ],
+      "source": [
+        "\n",
+        "while True: #loop so can run until stopped\n",
+        "  k = 0 #no vowels(k) before input\n",
+        "  word = input(\"Input a word. Type done to exit: \")\n",
+        "  if word == 'done':\n",
+        "    break\n",
+        "  else:\n",
+        "    for ch in word:#for loop so can test each letter in word\n",
+        "      if ch.lower() == 'a' or ch.lower() == 'e' or ch.lower() == 'i' or ch.lower() == 'o' or ch.lower() == 'u': #if any letters are a vowel:\n",
+        "        k += 1 #add 1 to vowel count\n",
+        "  print(f\"{word} has {k} vowel(s)\")\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "98dd5563",
+      "metadata": {
+        "id": "98dd5563"
+      },
+      "source": [
+        "---\n",
+        "## Task 5 — Mini-gradebook (≈20 min)\n",
+        "\n",
+        "Build a tiny gradebook using **both** a sentinel loop and a nested loop.\n",
+        "\n",
+        "**Requirements**\n",
+        "1. Repeatedly ask for a **student name** until the user types `done` (sentinel).  \n",
+        "   - Ignore blank names.\n",
+        "2. For each student, read exactly **3 scores** (0..100, integers).  \n",
+        "   - Use input validation with try/except; reprompt on bad input.\n",
+        "3. Store each student's average in a dictionary `grades[name] = avg`.  **OR** use two parallel lists instead.\n",
+        "4. THIS REQUIREMENT IS DELETED +3 points if you have coded this : After input ends, print a simple report sorted by name, e.g.:\n",
+        "   ```\n",
+        "   Alice : 88.00\n",
+        "   Bob   : 92.33\n",
+        "   ```\n",
+        "\n",
+        "Note: because dictionaries were not yet discussed, you are welcome to use **two different lists** instead.  \n",
+        "One list stores the names and the other stores the averages.  For example:\n",
+        "`list_1[0] == 'Alice'`, `list_1[1] == 'Bob'` and `list_2[0] == 88.00`, `list_2[1] == 92.33`.\n",
+        "To store data:\n",
+        "`list_1.append('Alice')` and `list_2.append(88.00)`.\n",
+        "\n",
+        "**Stretch (optional)**  \n",
+        "- Also print the **class average**."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 30,
+      "id": "b4c87c4c",
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "b4c87c4c",
+        "outputId": "3bfe4338-df05-411a-8833-f26e0338dccf"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "What's the students's name? Enter done if finished Done\n",
+            "Gradebook:\n"
+          ]
+        }
+      ],
+      "source": [
+        "list_1 = []\n",
+        "list_2 = []\n",
+        "students = 0\n",
+        "#while loop for each name input\n",
+        "while True:\n",
+        "  total = 0\n",
+        "  st_name = input(\"What's the students's name? Enter done if finished \")\n",
+        "  if st_name == \"\":\n",
+        "    continue\n",
+        "  elif st_name.lower() == 'done':\n",
+        "    break\n",
+        "#if a name is inputted:\n",
+        "  else:\n",
+        "    list_1.append(st_name) # add the name to classlist\n",
+        "    for n in range(3): # ask for scores 3x\n",
+        "      score = input(\"Input their score\")\n",
+        "      # validating loop:\n",
+        "      while True:\n",
+        "        try:\n",
+        "          score = int(score)\n",
+        "          if score < 0 or score > 100:\n",
+        "            raise ValueError\n",
+        "        except ValueError:\n",
+        "          score = int(input(\"Try again.Input a score between 0 and 100\"))\n",
+        "        # if input is valid, break out of loop\n",
+        "        else:\n",
+        "          break\n",
+        "      #add each number in loop to total\n",
+        "      total += score\n",
+        "      #After inputted all scores of student, calculate average and add to list\n",
+        "    average = total/3\n",
+        "    list_2.append(f\"{average:.1f}\")\n",
+        "    students += 1 # Keep count of number of students (for range of lists)\n",
+        "print(\"Gradebook:\")\n",
+        "for index in range(students):\n",
+        "  print(f\"{list_1[index]}: {list_2[index]}\")\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n",
+        "\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "0d1a8cf7",
+      "metadata": {
+        "id": "0d1a8cf7"
+      },
+      "source": [
+        "---\n",
+        "### ✅ Submission checklist\n",
+        "\n",
+        "- [ ] Notebook runs top-to-bottom without errors\n",
+        "- [ ] Brief comments added where logic might be unclear\n",
+        "- [ ] Push this notebook to GitHub and submit link to Canvas"
+      ]
+    }
+  ],
+  "metadata": {
+    "colab": {
+      "provenance": []
+    },
+    "language_info": {
+      "name": "python"
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
